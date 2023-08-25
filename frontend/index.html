@@ -23,9 +23,16 @@
             showImage.after(image);
         }
         async function generateImage(event){
-            event.preventDefault()
+            event.preventDefault();
 
-            alert("function startung")
+            // Get the canvas to place the loading gif onto
+            const canvas = document.getElementById("canvas-image");
+            context = canvas.getContext("2d");
+
+            alert("function starting")
+            const loadingElement = document.getElementById('loading'); // ADDED
+            loadingElement.style.display = 'block'; // ADDED: Show the loading GIF
+            const generateButton = document.getElementById('generate-button');
             const form = document.getElementById("imageform")
             const submitter = document.querySelector("button[value=Submit]");
             const reqform = new FormData();
@@ -51,6 +58,7 @@
                 return response.json()
             })
             .then((json) => {
+                loadingElement.style.display = 'none'; // ADDED: Hide the loading GIF
                 let imageData = json;
                 console.log(json)
                 const imageBytes = imageData.data;
@@ -58,19 +66,18 @@
                 console.log(format)
                 console.log(imageBytes)
 
-                const canvas = document.getElementById("canvas-image");
-                context = canvas.getContext("2d");
+
                 const image = document.createElement('img');;
 
                 image.setAttribute(
                 'src', `data:image/${format};base64,${imageBytes}`,
-                'width', 500,
+                'width', 612,
                 'height', 500
                 )
                 image.onload = () => {
                     context.drawImage(image, 0, 0)
                 }
-            })
+            });
         }
     </script>
     <style>
@@ -78,13 +85,13 @@
         margin: 0;
         padding: 0;
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-        background: linear-gradient(135deg, #48058b, #000000, #48058b, #000000);
+        background: linear-gradient(135deg, #d34a24, #992800, #bd3c18, #d2400b);
         background-size: 400% 200%;
         animation: gradient-shift 6s ease infinite;
     }
 
     header {
-        color: #c0c0c0;
+        color: #3c7f72;
         padding: 10px;
         display: flex;
     }
@@ -148,7 +155,7 @@
         flex: 1 1;
         position: relative;
         margin: 50;
-        background: #fff;
+        background: #ffffff;
     }
 
     @keyframes gradient-shift {
@@ -183,58 +190,24 @@
                     <input class="styles-input" placeholder="Search for a certain art style" type="text" value>
                 </div>
                 <div class="style-container">
+                    {% for filename in user_image %}
                     <div>
-                        <img src="images\abstract.jpg" alt="Abstract Art" class="style-image">
-                        <input type="radio" name="style" value="abstract">Abstract</input>
+                        <img src="/static/images/{{filename}}" alt="{{filename}}" class="style-image">
+                        <input type="radio" name="style" value="{{filename.split('.')[0]}}">{{filename.split(".")[0].title()}}</input>
                     </div>
-                    <div>
-                        <img src="images\pop-art.avif" alt="Pop Art" class="style-image">
-                        <input type="radio" name="style" value="popart" class="pop-art">Pop Art</input>
-                    </div>
-                    <div>
-                        <img src="images\superstring.jpg" alt="Superstring" class="style-image">
-                        <input type="radio" name="style" value="superstring" class="superstring">Superstring</input>
-                    </div>
-                    <div>
-                        <img src="images\cartoon.jpg" alt="Cartoon" class="style-image">
-                        <input type="radio" name="style" value="cartoon" class="cartoon">Cartoon</input>
-                    </div>
-                    <div>
-                        <img src="images\inkart.avif" alt="Ink Art" class="style-image">
-                        <input type="radio" name="style" value="ink-art" class="ink-art">Ink Art</input>
-                    </div>
-                    <div>
-                        <img src="images\vangogh2.webp" alt="Van Gogh 2" class="style-image">
-                        <input type="radio" name="style" value="van-gogh-2" class="van-gogh-2">Van Gogh 2</input>
-                    </div>
-                    <div>
-                        <img src="images\minimalism.jpg" alt="Minimalism" class="style-image">
-                        <input type="radio" name="style" value="minimalism" class="minimalism">Minimalism</input>
-                    </div>
-                    <div>
-                        <img src="images\realism.jpg" alt="Realism" class="style-image">
-                        <input type="radio" name="style" value="realism" class="realism">Realism</input>
-                    </div>
-                    <div>
-                        <img src="images\futurism.jpg" alt="Futurism" class="style-image">
-                        <input type="radio" name="style" value="futurism" class="futurism">Futurism</input>
-                    </div>
-                    <div>
-                        <img src="images\neoclassicism.jpg" alt="Neoclassicism" class="style-image">
-                        <input type="radio" name="style" value="neoclassicism" class="neoclassicism">Neoclassicism</button>
-                    </div>
-                    <div>
-                        <img src="images\romanticism.jpg" alt="Romanticism" class="style-image">
-                        <input type="radio" name="style" value="romanticism" class="romanticism">Romanticism</button>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
-
         </form>
 
         <div id="image-canvas" class="canvas main-content-right">
+
+            <div id="loading" style="display: none;">
+                <img id="loading-image" src="/static/asset/Cube_load.gif" alt="Loading..." />
+            </div>
+
             <div class="canvas-content">
-                <canvas id="canvas-image" width="500" height="500">
+                <canvas id="canvas-image" width="612" height="500">
             </div>
         </div>
     </div>
