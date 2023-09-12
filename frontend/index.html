@@ -55,7 +55,7 @@
             reqform.append('file', file.files[0])
             reqform.append('style', style)
             reqform.append('extension', format)
-            await fetch('http://127.0.0.1:8080/process', {
+            await fetch("http://127.0.0.1:5000/process", {
                 method: "POST",
                 body: reqform
             })
