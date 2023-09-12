@@ -2,14 +2,6 @@ import base64
 import os
 from io import BytesIO
 from pathlib import Path
-<<<<<<< HEAD
-from db.collection_model import CollectionManager
-from db.user_model import create_user
-from NST import image_loader, run_style_transfer, imshow
-from dotenv import dotenv_values
-from flask_cors import CORS, cross_origin
-=======
->>>>>>> cea23bd9de31974890ff5fb74fa7d424da4242ad
 from uuid import uuid4
 
 import matplotlib.pyplot as plt
@@ -20,12 +12,14 @@ from flask import Flask, Response, jsonify, render_template, request
 from flask_cors import CORS, cross_origin
 from PIL import Image
 
-from db.collection_model import CollectionManager
-from db.user_model import create_user
-from NST import image_loader, imshow, run_style_transfer
+from .db.collection_model import CollectionManager
+from .db.user_model import create_user
+from .NST import image_loader, imshow, run_style_transfer
 
 # Access connection string environment variable
-URI = os.environ["MONGO_URI"]
+conf = dotenv_values("../.env.sample")
+URI = conf.get("MONGO_URI")
+
 app = Flask(__name__, template_folder="../frontend")
 cors = CORS(app, resource={r"/*": {"origins": "*"}})
 
@@ -44,13 +38,8 @@ collection_manager = CollectionManager(URI)
 style_collection = collection_manager.get_styles_collection()
 user_collection = collection_manager.get_user_collection()
 
-<<<<<<< HEAD
-# @app.route("/", methods=["GET", "POST"])
-@app.route("/")
-=======
 
 @app.route("/", methods=["GET", "POST"])
->>>>>>> cea23bd9de31974890ff5fb74fa7d424da4242ad
 def home():
     images = [im for im in os.listdir(IMAGES_DIR)]
     return render_template("index.html", user_image=images)
@@ -143,4 +132,4 @@ def process_image():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=8088)
+    app.run(debug=True, host="0.0.0.0")
